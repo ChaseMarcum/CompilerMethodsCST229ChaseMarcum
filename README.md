@@ -1,0 +1,2 @@
+# CompilerMethodsCST229ChaseMarcum
+This is the lab for the second course in a two-course sequence.  The focus of this course will be on application of grammar and language theory.  The students will build a front-end compiler for a language of their choice.  Several parsing techniques will be discussed as well as corresponding grammar modifications.  Brief discussions will be given on back-end compiler processing.
