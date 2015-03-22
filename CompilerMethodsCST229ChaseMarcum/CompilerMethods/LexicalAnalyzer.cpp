@@ -1,7 +1,7 @@
 /***********************************************************
 * Author:					Chase Marcum
 * Date Created:				2014-01-01
-* Last Modification Date:	2015-02-02
+* Last Modification Date:	2015-03-21
 * Lab Number:				CST 320 Compiler Methods
 * Filename:					LexicalAnalyzer.cpp
 *
@@ -49,7 +49,7 @@ LexicalAnalyzer::LexicalAnalyzer()
 ****************************************************************/
 LexicalAnalyzer::~LexicalAnalyzer()
 {
-	inputFile.close();
+	inputFile_.close();
 }
 
 /**************************************************************
@@ -60,14 +60,14 @@ LexicalAnalyzer::~LexicalAnalyzer()
 *     Exit:		n/a
 ****************************************************************/
 void LexicalAnalyzer::Start() {
-	filename = ConsoleDisplay();
-	inputFile.open(filename);
+	filename_ = ConsoleDisplay();
+	inputFile_.open(filename_);
 
-	while (!inputFile.is_open())
+	while (!inputFile_.is_open())
 	{
 		cout << "\n\nFile is invalid.";
-		filename = ConsoleDisplay();
-		inputFile.open(filename);
+		filename_ = ConsoleDisplay();
+		inputFile_.open(filename_);
 	}
 
 	cout << "Analyzing JavaScript File\n\n";
@@ -91,10 +91,12 @@ string LexicalAnalyzer::ConsoleDisplay() {
 	system("cls");
 	cout << "CST 320 Compiler Methods\n";
 	cout << "Lab #1 Preprocessor & Lexical Analyzer\n\n";
-	cout << "This program will analyze JavaScript files\n";
+	cout << "This program will analyze JavaScript files.\n";
 
-	cout << "Please type the name of the JavaScript file: \n"
-		<< "JavaScript code:\n\n";
+	cout << "Please type the name of the JavaScript file \n"
+		<< "you would like to analyze:\n\n"
+		<< "Built in test files you may run:\n"
+		<< "Test1.js, Test2.js, Test3.js\n\n";
 	cin >> filename;
 
 	return filename;
@@ -104,7 +106,7 @@ string LexicalAnalyzer::ConsoleDisplay() {
 	cout << "Lab #2 Recursive Descent Parser(List of statements & Some Semantic Analysis)\n\n";
 	cout << "This program will analyze the provious JavaScript file\n\n";
 
-	_recursiveDescentParser.Start(_tokenTable, _symbolTable);
+	recursiveDescentParser_.Start(tokenTable_, symbolTable_);
 }
 
 /**************************************************************
@@ -119,15 +121,15 @@ void LexicalAnalyzer::ReadFile()
 {
 	char currentChar;
 
-	while (!inputFile.eof())
+	while (!inputFile_.eof())
 	{
-		position = 0;
+		position_ = 0;
 
-		getline(inputFile, lineOfCode);
+		getline(inputFile_, lineOfCode_);
 
-		while (lineOfCode.length() > position)
+		while (lineOfCode_.length() > position_)
 		{
-			currentChar = lineOfCode.at(position);
+			currentChar = lineOfCode_.at(position_);
 
 			if (isInt(currentChar))
 			{
@@ -135,7 +137,7 @@ void LexicalAnalyzer::ReadFile()
 			}
 			else if (currentChar == ' ' || currentChar == '\t')
 			{
-				position++;
+				position_++;
 			}
 			else if (isIdentifier(currentChar))
 			{
@@ -190,7 +192,7 @@ bool LexicalAnalyzer::isIdentifier(char currentChar) {
 ****************************************************************/
 bool LexicalAnalyzer::isSymbol(char currentChar) {
 	for (int i = 0; i < NUMBER_OF_SYMBLES; i++) {
-		if (currentChar == _validSymbols[i])
+		if (currentChar == validSymbols_[i])
 			return true;
 	}
 
@@ -206,7 +208,7 @@ bool LexicalAnalyzer::isSymbol(char currentChar) {
 ****************************************************************/
 bool LexicalAnalyzer::isKeyword(string currentWord) {
 	for (int i = 0; i < NUMBER_OF_KEYWORDS; i++) {
-		if (currentWord == _validKeywords[i])
+		if (currentWord == validKeywords_[i])
 		{
 			return true;
 		}
@@ -235,13 +237,13 @@ bool LexicalAnalyzer::isOperator(char currentChar) {
 	else if (currentChar == '/' || currentChar == '*')
 	{
 		string tempToken;
-		int tempPosition = position;
-		tempToken = lineOfCode.at(tempPosition);
-		tempToken += lineOfCode.at(tempPosition++);
+		int tempPosition = position_;
+		tempToken = lineOfCode_.at(tempPosition);
+		tempToken += lineOfCode_.at(tempPosition++);
 
 		if (tempToken == "//" || tempToken == "/*" || tempToken == "*/")
 		{
-			currentToken = tempToken;
+			currentToken_ = tempToken;
 			ReadComment();
 		}
 		else
@@ -264,7 +266,7 @@ bool LexicalAnalyzer::isOperator(char currentChar) {
 bool LexicalAnalyzer::isPreprocessorDirective(string currentWord) {
 	// Check for all symbols that ARE preprocessor directives in JS
 	for (int i = 0; i < NUMBER_OF_PREPROCESSORDIRECTIVE; i++) {
-		if (currentWord == _validPreprocessorDirective[i])
+		if (currentWord == validPreprocessorDirective_[i])
 		{
 			return true;
 		}
@@ -280,18 +282,18 @@ bool LexicalAnalyzer::isPreprocessorDirective(string currentWord) {
 *     Exit:		n/a
 ****************************************************************/
 void LexicalAnalyzer::ReadIdentifier(bool valid) {
-	while (lineOfCode.length() > position &&
-		(isIdentifier(lineOfCode.at(position)) ||
-		isInt(lineOfCode.at(position))))
+	while (lineOfCode_.length() > position_ &&
+		(isIdentifier(lineOfCode_.at(position_)) ||
+		isInt(lineOfCode_.at(position_))))
 	{
-		currentToken += lineOfCode.at(position++);
+		currentToken_ += lineOfCode_.at(position_++);
 	}
 
-	if (isPreprocessorDirective(currentToken))
+	if (isPreprocessorDirective(currentToken_))
 	{
-		HandlePreprocessorDirective(currentChar, "PreprocessorDirective");
+		HandlePreprocessorDirective(currentChar_, "PreprocessorDirective");
 	}
-	else if (isKeyword(currentToken))
+	else if (isKeyword(currentToken_))
 	{
 		AddToSymbolTable("Keyword");
 	}
@@ -315,17 +317,17 @@ void LexicalAnalyzer::ReadIdentifier(bool valid) {
 void LexicalAnalyzer::ReadInt() {
 	bool isFloat = false;
 
-	while (lineOfCode.length() > position && (isInt(lineOfCode.at(position)) ||
-		(lineOfCode.at(position) == '.' && !isFloat))) {
-		if (lineOfCode.at(position) == '.')
+	while (lineOfCode_.length() > position_ && (isInt(lineOfCode_.at(position_)) ||
+		(lineOfCode_.at(position_) == '.' && !isFloat))) {
+		if (lineOfCode_.at(position_) == '.')
 		{
 			isFloat = true;
 		}
 
-		currentToken += lineOfCode.at(position++);
+		currentToken_ += lineOfCode_.at(position_++);
 	}
 
-	if (lineOfCode.length() > position &&  isIdentifier(lineOfCode.at(position))) {
+	if (lineOfCode_.length() > position_ &&  isIdentifier(lineOfCode_.at(position_))) {
 		ReadIdentifier(false);
 	}
 	else if (isFloat)
@@ -346,19 +348,19 @@ void LexicalAnalyzer::ReadInt() {
 *     Exit:		n/a
 ****************************************************************/
 void LexicalAnalyzer::ReadSymbol() {
-	if (isOperator(lineOfCode.at(position)))
+	if (isOperator(lineOfCode_.at(position_)))
 	{
-		currentToken = lineOfCode.at(position++);
+		currentToken_ = lineOfCode_.at(position_++);
 		AddToSymbolTable("Operator");
 	}
-	else if (isSymbol(lineOfCode.at(position)))
+	else if (isSymbol(lineOfCode_.at(position_)))
 	{
-		currentToken = lineOfCode.at(position++);
+		currentToken_ = lineOfCode_.at(position_++);
 		AddToSymbolTable("Symbol");
 	}
 	else
 	{
-		currentToken = lineOfCode.at(position++);
+		currentToken_ = lineOfCode_.at(position_++);
 		AddToSymbolTable("ERROR", "\tIllegal symbol");
 	}
 }
@@ -373,18 +375,18 @@ void LexicalAnalyzer::ReadSymbol() {
 void LexicalAnalyzer::Print(string type, string errorMessage) {
 	if (type == "ERROR")
 	{
-		SetConsoleTextAttribute(hConsole, 0xc);
+		SetConsoleTextAttribute(hConsole_, 0xc);
 	}
 	else if (type == "Keyword")
 	{
-		SetConsoleTextAttribute(hConsole, 0xa);
+		SetConsoleTextAttribute(hConsole_, 0xa);
 	}
 
-	cout << setw(28) << left << currentToken;
+	cout << setw(28) << left << currentToken_;
 	cout << left << type << errorMessage << endl;
-	SetConsoleTextAttribute(hConsole, 0xf);
+	SetConsoleTextAttribute(hConsole_, 0xf);
 
-	currentToken = "";
+	currentToken_ = "";
 }
 
 /**************************************************************
@@ -401,27 +403,27 @@ void LexicalAnalyzer::AddToSymbolTable(string type, string errorMessage)
 	if (type != "Comment"){
 		if (type == "ERROR")
 		{
-			SetConsoleTextAttribute(hConsole, 0xc);
+			SetConsoleTextAttribute(hConsole_, 0xc);
 		}
 		else if (type == "Keyword")
 		{
-			SetConsoleTextAttribute(hConsole, 0xa);
+			SetConsoleTextAttribute(hConsole_, 0xa);
 		}
 
-		_currentSymbol.symbolName = currentToken;
-		_currentSymbol.symbolType = type;
-		_currentVectorToken.tokenName = currentToken;
-		_currentVectorToken.tokenType = type;
+		currentSymbol_.symbolName = currentToken_;
+		currentSymbol_.symbolType = type;
+		currentVectorToken_.tokenName = currentToken_;
+		currentVectorToken_.tokenType = type;
 
-		_symbolTable.addSymbol(_currentSymbol);
-		_tokenTable.addToken(_currentVectorToken);
+		symbolTable_.addSymbol(currentSymbol_);
+		tokenTable_.addToken(currentVectorToken_);
 
-		cout << "   " << setw(28) << left << _currentSymbol.symbolName;
-		cout << setw(24) << left << _currentSymbol.symbolType << errorMessage;
+		cout << "   " << setw(28) << left << currentSymbol_.symbolName;
+		cout << setw(24) << left << currentSymbol_.symbolType << errorMessage;
 		cout << left << "YES" << endl;
-		SetConsoleTextAttribute(hConsole, 0xf);
+		SetConsoleTextAttribute(hConsole_, 0xf);
 
-		currentToken = "";
+		currentToken_ = "";
 	}
 }
 
@@ -437,58 +439,58 @@ void LexicalAnalyzer::AddToSymbolTable(string type, string errorMessage)
 void LexicalAnalyzer::HandlePreprocessorDirective(char currentChar, string type, string errorMessage){
 	if (type == "ERROR")
 	{
-		SetConsoleTextAttribute(hConsole, 0xc);
+		SetConsoleTextAttribute(hConsole_, 0xc);
 	}
-	else if (currentToken == "#define")
+	else if (currentToken_ == "#define")
 	{
-		_currentSymbol.symbolName = currentToken;
-		_currentSymbol.symbolType = type;
-		_currentVectorToken.tokenName = currentToken;
-		_currentVectorToken.tokenType = type;
+		currentSymbol_.symbolName = currentToken_;
+		currentSymbol_.symbolType = type;
+		currentVectorToken_.tokenName = currentToken_;
+		currentVectorToken_.tokenType = type;
 
-		currentToken = "";
+		currentToken_ = "";
 
-		while (lineOfCode.length() > position)
+		while (lineOfCode_.length() > position_)
 		{
-			currentChar = lineOfCode.at(position);
+			currentChar = lineOfCode_.at(position_);
 
 			if (isInt(currentChar))
 			{
 				bool isFloat = false;
 
-				while (lineOfCode.length() > position && (isInt(lineOfCode.at(position)) ||
-					(lineOfCode.at(position) == '.' && !isFloat))) {
-					if (lineOfCode.at(position) == '.')
+				while (lineOfCode_.length() > position_ && (isInt(lineOfCode_.at(position_)) ||
+					(lineOfCode_.at(position_) == '.' && !isFloat))) {
+					if (lineOfCode_.at(position_) == '.')
 					{
 						isFloat = true;
 					}
 
-					currentToken += lineOfCode.at(position++);
+					currentToken_ += lineOfCode_.at(position_++);
 				}
 
-				if (lineOfCode.length() > position &&  isIdentifier(lineOfCode.at(position))) {
+				if (lineOfCode_.length() > position_ &&  isIdentifier(lineOfCode_.at(position_))) {
 					ReadIdentifier(false);
 				}
 				else if (isFloat)
 				{
-					_currentSymbol.symbolValue = currentToken;
-					_currentVectorToken.tokenValue = currentToken;
-					_symbolTable.addSymbol(_currentSymbol);
-					_tokenTable.addToken(_currentVectorToken);
+					currentSymbol_.symbolValue = currentToken_;
+					currentVectorToken_.tokenValue = currentToken_;
+					symbolTable_.addSymbol(currentSymbol_);
+					tokenTable_.addToken(currentVectorToken_);
 
-					SetConsoleTextAttribute(hConsole, 0xb);
-					cout << "   " << setw(28) << left << _currentSymbol.symbolName;
-					cout << setw(24) << left << _currentSymbol.symbolType << errorMessage;
-					cout << left << "YES w/ " << _currentSymbol.symbolUse << " = " << _currentSymbol.symbolValue << endl;
-					SetConsoleTextAttribute(hConsole, 0xf);
+					SetConsoleTextAttribute(hConsole_, 0xb);
+					cout << "   " << setw(28) << left << currentSymbol_.symbolName;
+					cout << setw(24) << left << currentSymbol_.symbolType << errorMessage;
+					cout << left << "YES w/ " << currentSymbol_.symbolUse << " = " << currentSymbol_.symbolValue << endl;
+					SetConsoleTextAttribute(hConsole_, 0xf);
 
-					currentToken = "";
+					currentToken_ = "";
 
-					position++;
+					position_++;
 
-					while (lineOfCode.length() > position)
+					while (lineOfCode_.length() > position_)
 					{
-						currentChar = lineOfCode.at(position);
+						currentChar = lineOfCode_.at(position_);
 
 						if (isInt(currentChar))
 						{
@@ -496,7 +498,7 @@ void LexicalAnalyzer::HandlePreprocessorDirective(char currentChar, string type,
 						}
 						else if (currentChar == ' ' || currentChar == '\t')
 						{
-							position++;
+							position_++;
 						}
 						else if (isIdentifier(currentChar))
 						{
@@ -512,24 +514,24 @@ void LexicalAnalyzer::HandlePreprocessorDirective(char currentChar, string type,
 				}
 				else
 				{
-					_currentSymbol.symbolValue = currentToken;
-					_currentVectorToken.tokenValue = currentToken;
-					_symbolTable.addSymbol(_currentSymbol);
-					_tokenTable.addToken(_currentVectorToken);
+					currentSymbol_.symbolValue = currentToken_;
+					currentVectorToken_.tokenValue = currentToken_;
+					symbolTable_.addSymbol(currentSymbol_);
+					tokenTable_.addToken(currentVectorToken_);
 
-					SetConsoleTextAttribute(hConsole, 0xb);
-					cout << "   " << setw(28) << left << _currentSymbol.symbolName;
-					cout << setw(24) << left << _currentSymbol.symbolType << errorMessage;
-					cout << left << "YES w/ " << _currentSymbol.symbolUse << " = " << _currentSymbol.symbolValue << endl;
-					SetConsoleTextAttribute(hConsole, 0xf);
+					SetConsoleTextAttribute(hConsole_, 0xb);
+					cout << "   " << setw(28) << left << currentSymbol_.symbolName;
+					cout << setw(24) << left << currentSymbol_.symbolType << errorMessage;
+					cout << left << "YES w/ " << currentSymbol_.symbolUse << " = " << currentSymbol_.symbolValue << endl;
+					SetConsoleTextAttribute(hConsole_, 0xf);
 
-					currentToken = "";
+					currentToken_ = "";
 
-					position++;
+					position_++;
 
-					while (lineOfCode.length() > position)
+					while (lineOfCode_.length() > position_)
 					{
-						currentChar = lineOfCode.at(position);
+						currentChar = lineOfCode_.at(position_);
 
 						if (isInt(currentChar))
 						{
@@ -537,7 +539,7 @@ void LexicalAnalyzer::HandlePreprocessorDirective(char currentChar, string type,
 						}
 						else if (currentChar == ' ' || currentChar == '\t')
 						{
-							position++;
+							position_++;
 						}
 						else if (isIdentifier(currentChar))
 						{
@@ -554,7 +556,7 @@ void LexicalAnalyzer::HandlePreprocessorDirective(char currentChar, string type,
 			}
 			else if (currentChar == ' ' || currentChar == '\t' || currentChar == '=')
 			{
-				position++;
+				position_++;
 			}
 			else if (isIdentifier(currentChar))
 			{
@@ -566,10 +568,10 @@ void LexicalAnalyzer::HandlePreprocessorDirective(char currentChar, string type,
 			}
 		}
 	}
-	else if (currentToken == "#ifndef")
+	else if (currentToken_ == "#ifndef")
 	{
 	}
-	else if (currentToken == "#endif")
+	else if (currentToken_ == "#endif")
 	{
 	}
 }
@@ -582,22 +584,22 @@ void LexicalAnalyzer::HandlePreprocessorDirective(char currentChar, string type,
 *     Exit:		n/a
 ****************************************************************/
 void LexicalAnalyzer::ReadIdentifierForPreDirective(bool valid) {
-	while (lineOfCode.length() > position &&
-		(isIdentifier(lineOfCode.at(position)) ||
-		isInt(lineOfCode.at(position))))
+	while (lineOfCode_.length() > position_ &&
+		(isIdentifier(lineOfCode_.at(position_)) ||
+		isInt(lineOfCode_.at(position_))))
 	{
-		currentToken += lineOfCode.at(position++);
+		currentToken_ += lineOfCode_.at(position_++);
 	}
 
-	if (isKeyword(currentToken))
+	if (isKeyword(currentToken_))
 	{
 		AddToSymbolTable("Keyword");
 	}
 	else if (valid)
 	{
-		_currentSymbol.symbolUse = currentToken;
-		_currentVectorToken.tokenValue = currentToken;
-		currentToken = "";
+		currentSymbol_.symbolUse = currentToken_;
+		currentVectorToken_.tokenValue = currentToken_;
+		currentToken_ = "";
 	}
 	else
 	{
@@ -614,73 +616,73 @@ void LexicalAnalyzer::ReadIdentifierForPreDirective(bool valid) {
 ****************************************************************/
 void LexicalAnalyzer::ReadComment(bool valid)
 {
-	if (currentToken == "/*")
+	if (currentToken_ == "/*")
 	{
-		while (lineOfCode.length() > position)
+		while (lineOfCode_.length() > position_)
 		{
-			currentChar = lineOfCode.at(position);
+			currentChar_ = lineOfCode_.at(position_);
 
-			if (currentChar == '*')
+			if (currentChar_ == '*')
 			{
-				currentToken = "*";
-				currentToken += lineOfCode.at(position++);
+				currentToken_ = "*";
+				currentToken_ += lineOfCode_.at(position_++);
 
-				if (currentToken == "*/")
+				if (currentToken_ == "*/")
 				{
 					ReadFile();
 				}
 			}
 
-			position++;
+			position_++;
 		}
 
-		while (!inputFile.eof())
+		while (!inputFile_.eof())
 		{
-			position = 0;
-			getline(inputFile, lineOfCode);
+			position_ = 0;
+			getline(inputFile_, lineOfCode_);
 
-			while (lineOfCode.length() > position)
+			while (lineOfCode_.length() > position_)
 			{
-				currentChar = lineOfCode.at(position);
+				currentChar_ = lineOfCode_.at(position_);
 
-				if (currentChar == '*')
+				if (currentChar_ == '*')
 				{
-					currentToken = "*";
-					currentToken += lineOfCode.at(position++);
+					currentToken_ = "*";
+					currentToken_ += lineOfCode_.at(position_++);
 
-					if (currentToken == "*/")
+					if (currentToken_ == "*/")
 					{
 						ReadFile();
 					}
 				}
 
-				position++;
+				position_++;
 			}
 		}
 	}
-	else if (currentToken == "//")
+	else if (currentToken_ == "//")
 	{
-		position = lineOfCode.length() - 1;
-		currentToken = "";
+		position_ = lineOfCode_.length() - 1;
+		currentToken_ = "";
 		AddToSymbolTable("Comment");
 	}
-	else if (currentToken == "*/")
+	else if (currentToken_ == "*/")
 	{
-		currentToken = "";
+		currentToken_ = "";
 
-		while (lineOfCode.length() > position)
+		while (lineOfCode_.length() > position_)
 		{
-			currentChar = lineOfCode.at(position);
+			currentChar_ = lineOfCode_.at(position_);
 
-			if (isInt(currentChar))
+			if (isInt(currentChar_))
 			{
 				ReadInt();
 			}
-			else if (currentChar == ' ' || currentChar == '\t')
+			else if (currentChar_ == ' ' || currentChar_ == '\t')
 			{
-				position++;
+				position_++;
 			}
-			else if (isIdentifier(currentChar))
+			else if (isIdentifier(currentChar_))
 			{
 				ReadIdentifier();
 			}
@@ -703,66 +705,66 @@ void LexicalAnalyzer::ReadComment(bool valid)
 *     Exit:		n/a
 ****************************************************************/
 void LexicalAnalyzer::InitializeArrays() {
-	_validSymbols[0] = '~';
-	_validSymbols[1] = '!';
-	_validSymbols[2] = '$';
-	_validSymbols[3] = '%';
-	_validSymbols[4] = '^';
-	_validSymbols[5] = '&';
-	_validSymbols[6] = '*';
-	_validSymbols[7] = '(';
-	_validSymbols[8] = ')';
-	_validSymbols[9] = '-';
-	_validSymbols[10] = '+';
-	_validSymbols[11] = '=';
-	_validSymbols[12] = '{';
-	_validSymbols[13] = '}';
-	_validSymbols[14] = '[';
-	_validSymbols[15] = ']';
-	_validSymbols[16] = ';';
-	_validSymbols[17] = ':';
-	_validSymbols[18] = '\'';
-	_validSymbols[19] = '"';
-	_validSymbols[20] = ',';
-	_validSymbols[21] = '<';
-	_validSymbols[22] = '>';
-	_validSymbols[23] = '?';
-	_validSymbols[24] = '/';
-	_validSymbols[25] = '.';
-	_validSymbols[26] = '|';
-	_validSymbols[27] = '\\';
+	validSymbols_[0] = '~';
+	validSymbols_[1] = '!';
+	validSymbols_[2] = '$';
+	validSymbols_[3] = '%';
+	validSymbols_[4] = '^';
+	validSymbols_[5] = '&';
+	validSymbols_[6] = '*';
+	validSymbols_[7] = '(';
+	validSymbols_[8] = ')';
+	validSymbols_[9] = '-';
+	validSymbols_[10] = '+';
+	validSymbols_[11] = '=';
+	validSymbols_[12] = '{';
+	validSymbols_[13] = '}';
+	validSymbols_[14] = '[';
+	validSymbols_[15] = ']';
+	validSymbols_[16] = ';';
+	validSymbols_[17] = ':';
+	validSymbols_[18] = '\'';
+	validSymbols_[19] = '"';
+	validSymbols_[20] = ',';
+	validSymbols_[21] = '<';
+	validSymbols_[22] = '>';
+	validSymbols_[23] = '?';
+	validSymbols_[24] = '/';
+	validSymbols_[25] = '.';
+	validSymbols_[26] = '|';
+	validSymbols_[27] = '\\';
 
-	_validKeywords[0] = "break";
-	_validKeywords[1] = "case";
-	_validKeywords[2] = "catch";
-	_validKeywords[3] = "continue";
-	_validKeywords[4] = "debugger";
-	_validKeywords[5] = "default";
-	_validKeywords[6] = "delete";
-	_validKeywords[7] = "do";
-	_validKeywords[8] = "else";
-	_validKeywords[9] = "finally";
-	_validKeywords[10] = "for";
-	_validKeywords[11] = "function";
-	_validKeywords[12] = "if";
-	_validKeywords[13] = "in";
-	_validKeywords[14] = "instanceof";
-	_validKeywords[15] = "new";
-	_validKeywords[16] = "return";
-	_validKeywords[17] = "switch";
-	_validKeywords[18] = "this";
-	_validKeywords[19] = "throw";
-	_validKeywords[20] = "try";
-	_validKeywords[21] = "typeof";
-	_validKeywords[22] = "var";
-	_validKeywords[23] = "void";
-	_validKeywords[24] = "while";
-	_validKeywords[25] = "with";
+	validKeywords_[0] = "break";
+	validKeywords_[1] = "case";
+	validKeywords_[2] = "catch";
+	validKeywords_[3] = "continue";
+	validKeywords_[4] = "debugger";
+	validKeywords_[5] = "default";
+	validKeywords_[6] = "delete";
+	validKeywords_[7] = "do";
+	validKeywords_[8] = "else";
+	validKeywords_[9] = "finally";
+	validKeywords_[10] = "for";
+	validKeywords_[11] = "function";
+	validKeywords_[12] = "if";
+	validKeywords_[13] = "in";
+	validKeywords_[14] = "instanceof";
+	validKeywords_[15] = "new";
+	validKeywords_[16] = "return";
+	validKeywords_[17] = "switch";
+	validKeywords_[18] = "this";
+	validKeywords_[19] = "throw";
+	validKeywords_[20] = "try";
+	validKeywords_[21] = "typeof";
+	validKeywords_[22] = "var";
+	validKeywords_[23] = "void";
+	validKeywords_[24] = "while";
+	validKeywords_[25] = "with";
 
-	_validPreprocessorDirective[0] = "//";
-	_validPreprocessorDirective[1] = "/*";
-	_validPreprocessorDirective[2] = "*/";
-	_validPreprocessorDirective[3] = "#define";
-	_validPreprocessorDirective[4] = "#ifndef";
-	_validPreprocessorDirective[5] = "#endif";
+	validPreprocessorDirective_[0] = "//";
+	validPreprocessorDirective_[1] = "/*";
+	validPreprocessorDirective_[2] = "*/";
+	validPreprocessorDirective_[3] = "#define";
+	validPreprocessorDirective_[4] = "#ifndef";
+	validPreprocessorDirective_[5] = "#endif";
 };

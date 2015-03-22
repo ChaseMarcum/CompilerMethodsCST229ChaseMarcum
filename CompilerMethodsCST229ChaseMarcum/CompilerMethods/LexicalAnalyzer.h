@@ -1,7 +1,7 @@
 /***********************************************************
 * Author:					Chase Marcum
 * Date Created:				2014-03-01
-* Last Modification Date:	2015-02-02
+* Last Modification Date:	2015-03-21
 * Lab Number:				CST 320 Compiler Methods 
 * Filename:					LexicalAnalyzer.h
 *
@@ -27,7 +27,6 @@
 #include "TokenTable.h"
 #include "RecursiveDescentParser.h"
 #include <string>
-#include <iostream>
 #include <Windows.h>
 #include <fstream>
 
@@ -38,8 +37,8 @@ class LexicalAnalyzer
 public:
 	const static int NUMBER_OF_SYMBLES = 28;				// Number of symbols in JavaScript
 	const static int NUMBER_OF_KEYWORDS = 26;				// Number of Keywords in JavaScript
-	const static int NUMBER_OF_PREPROCESSORDIRECTIVE = 6;	// Number of Preprocessor Directives
-	// in JavaScript
+	const static int NUMBER_OF_PREPROCESSORDIRECTIVE = 6;	/* Number of Preprocessor Directives
+															   in JavaScript */
 
 	/**************************************************************
 	*	  Purpose:  Constructor of Lexical Analyzer
@@ -69,23 +68,23 @@ public:
 	void Start();
 
 private:
-	size_t position;										// Iterates position of lineOfCode initially set at 0
-	char currentChar;										// Current char fron lineOfCode
-	string currentToken;									// Current string from lineOfCode
-	string lineOfCode;										// Sinlge line of code from file
-	string filename;										// User input of JavaScript filename
-	ifstream inputFile;										// Used to open a file connection
-	char _validSymbols[NUMBER_OF_SYMBLES];					// Array of valid JavaScript symbols
-	string _validKeywords[NUMBER_OF_KEYWORDS];				// Array of valid JavaScript keywords
-	string _validPreprocessorDirective[NUMBER_OF_PREPROCESSORDIRECTIVE];	/* Array of vailid JavaScript
+	size_t position_;										// Iterates position of lineOfCode initially set at 0
+	char currentChar_;										// Current char fron lineOfCode
+	string currentToken_;									// Current string from lineOfCode
+	string lineOfCode_;										// Sinlge line of code from file
+	string filename_;										// User input of JavaScript filename
+	ifstream inputFile_;										// Used to open a file connection
+	char validSymbols_[NUMBER_OF_SYMBLES];					// Array of valid JavaScript symbols
+	string validKeywords_[NUMBER_OF_KEYWORDS];				// Array of valid JavaScript keywords
+	string validPreprocessorDirective_[NUMBER_OF_PREPROCESSORDIRECTIVE];	/* Array of vailid JavaScript
 																			   Preprocessor Directives */
-	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);		// A HANDLE used for font color
-	Symbol _currentSymbol;									/* Symbol class that holds string name,
+	HANDLE hConsole_ = GetStdHandle(STD_OUTPUT_HANDLE);		// A HANDLE used for font color
+	Symbol currentSymbol_;									/* Symbol class that holds string name,
 															   string type, string use, string value */
-	SymbolTable _symbolTable;								// Set of Symbols
-	TokenTable _tokenTable;									// vector of tokens
-	Token _currentVectorToken;								// token class for vector Token Table
-	RecursiveDescentParser _recursiveDescentParser;
+	SymbolTable symbolTable_;								// Set of Symbols
+	TokenTable tokenTable_;									// vector of tokens
+	Token currentVectorToken_;								// token class for vector Token Table
+	RecursiveDescentParser recursiveDescentParser_;
 
 	/**************************************************************
 	*	  Purpose:  Asks user for a JavaScript filename

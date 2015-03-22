@@ -1,7 +1,7 @@
 /* **********************************************************
 * Author:					Chase Marcum
 * Date Created:				2014-03-01
-* Last Modification Date:	2015-02-02
+* Last Modification Date:	2015-03-21
 * Lab Number:				CST 229 Lab 2
 * Filename:					main.cpp
 *

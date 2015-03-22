@@ -1,53 +1,54 @@
 /***********************************************************
 * Author:					Chase Marcum
-* Date Created:				2014-06-05
-* Last Modification Date:	2015-03-21
-* Lab Number:				CST 320 Lab 1
-* Filename:					Token.cpp
+* Date Created:				2015-01-03
+* Last Modification Date:	2015-03-22
+* Lab Number:				CST 320 Lab 3
+* Filename:					Rules.cpp
 *
 * Overview:
-*	Sets Token
-*
+*	Sets Rules outline.
 *
 ************************************************************/
 
-#include "Token.h"
+#include "Rules.h"
 
 /**************************************************************
-*	  Purpose:  Constructor of Token and sets initial
+*	  Purpose:  Constructor of Rules and sets initial
 *				state of variable members
 *
-*     Entry:	string name, string type
+*     Entry:	string key, string value, string elements
 *
 *     Exit:		n/a
+*
 ****************************************************************/
-Token::Token(string name, string type, string use, string value)
+Rules::Rules(string passedKey, string passedValue, string passedElements)
 {
-	tokenName	= name;
-	tokenType	= type;
-	tokenUse	= use;
-	tokenValue	= value;
+	key = passedKey;
+	value = passedValue;
+	elements = passedElements;
 }
 
 /**************************************************************
-*	  Purpose:  Default constructor of Token no variable
+*	  Purpose:  Default constructor for Rules no variable
 *				members set
 *
-*     Entry:  n/a
+*     Entry:	n/a
 *
-*     Exit:  n/a
+*     Exit:		n/a
+*
 ****************************************************************/
-Token::Token()
+Rules::Rules()
 {
 }
 
 /**************************************************************
-*	  Purpose:  Destructor of Token
+*	  Purpose:  Destructor of Rules
 *
-*     Entry:  n/a
+*     Entry:	n/a
 *
-*     Exit:  n/a
+*     Exit:		n/a
+*
 ****************************************************************/
-Token::~Token()
+Rules::~Rules()
 {
 }

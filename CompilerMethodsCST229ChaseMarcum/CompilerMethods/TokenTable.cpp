@@ -1,7 +1,7 @@
 /***********************************************************
 * Author:					Chase Marcum
-* Date Created:				6/5/2014
-* Last Modification Date:	6/11/2014
+* Date Created:				2014-06-05
+* Last Modification Date:	2015-03-21
 * Lab Number:				CST 320 Lab 1
 * Filename:					TokenTable.cpp
 *

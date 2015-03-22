@@ -45,7 +45,7 @@ public:
 	RecursiveDescentParser();
 	~RecursiveDescentParser();
 
-	void Start(TokenTable passedTokenTable, SymbolTable passedSymbolTable);
+	bool Start(TokenTable passedTokenTable, SymbolTable passedSymbolTable);
 
 	/**************************************************************
 	*	  Purpose:  Checks if Token is a vailid JavaScript
