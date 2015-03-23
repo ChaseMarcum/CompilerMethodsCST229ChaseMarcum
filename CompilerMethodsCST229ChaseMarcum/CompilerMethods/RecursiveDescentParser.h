@@ -12,7 +12,7 @@
 *	List of tokens from lexical analyzer.
 *
 * Output:
-*	Yes or No.
+*	True or False
 *
 ************************************************************/
 
@@ -27,7 +27,6 @@
 class RecursiveDescentParser
 {
 public:
-
 	TokenTable _tokenTable;
 	Token _token;
 	vector<Token>::iterator _tokenTableIterator;
@@ -41,7 +40,7 @@ public:
 
 	bool syntaxError = false;
 
-	RecursiveDescentParser(TokenTable passedTokenTable, SymbolTable passedSymbolTable);
+	RecursiveDescentParser(TokenTable tokenTable, SymbolTable symbolTable);
 	RecursiveDescentParser();
 	~RecursiveDescentParser();
 

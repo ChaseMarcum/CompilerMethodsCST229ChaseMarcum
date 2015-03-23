@@ -16,16 +16,16 @@
 #include "RecursiveDescentParser.h"
 
 
-RecursiveDescentParser::RecursiveDescentParser(TokenTable passedTokenTable, SymbolTable passedSymbolTable)
+RecursiveDescentParser::RecursiveDescentParser(TokenTable tokenTable, SymbolTable symbolTable)
 {
-	_tokenTable = TokenTable(passedTokenTable);
-	_tokenTableIterator = vector<Token>::iterator(passedTokenTable.tokenTableVector.begin());
-	_tempTokenTableIterator = vector<Token>::iterator(passedTokenTable.tokenTableVector.begin());
-	_endOfTokenTableIterator = vector<Token>::iterator(passedTokenTable.tokenTableVector.begin());
-	_symbolTable = SymbolTable(passedSymbolTable);
-	_symbolTableIterator = set<Symbol>::iterator(passedSymbolTable.SymbolTableSet.begin());
-	_tempSymbolTableIterator = set<Symbol>::iterator(passedSymbolTable.SymbolTableSet.begin());
-	_endOfSymbolTableIterator = set<Symbol>::iterator(passedSymbolTable.SymbolTableSet.begin());
+	_tokenTable = TokenTable(tokenTable);
+	_tokenTableIterator = vector<Token>::iterator(tokenTable.tokenTableVector.begin());
+	_tempTokenTableIterator = vector<Token>::iterator(tokenTable.tokenTableVector.begin());
+	_endOfTokenTableIterator = vector<Token>::iterator(tokenTable.tokenTableVector.begin());
+	_symbolTable = SymbolTable(symbolTable);
+	_symbolTableIterator = set<Symbol>::iterator(symbolTable.SymbolTableSet.begin());
+	_tempSymbolTableIterator = set<Symbol>::iterator(symbolTable.SymbolTableSet.begin());
+	_endOfSymbolTableIterator = set<Symbol>::iterator(symbolTable.SymbolTableSet.begin());
 }
 
 RecursiveDescentParser::RecursiveDescentParser()
@@ -39,7 +39,7 @@ RecursiveDescentParser::~RecursiveDescentParser()
 
 bool RecursiveDescentParser::Start(TokenTable passedTokenTable, SymbolTable passedSymbolTable)
 {
-	if (checkStatList())
+	if (isStatList())
 	{
 		cout << "Passed!" << endl;
 		return true;
@@ -50,7 +50,7 @@ bool RecursiveDescentParser::Start(TokenTable passedTokenTable, SymbolTable pass
 
 bool isDeclarationStatement() 
 {
-	if (checkVariable())
+	if (isVariable())
 	{
 		if (_tempTokenTableIterator->tokenName == "=")
 		{
@@ -103,7 +103,7 @@ bool isDeclarationStatement()
 
 bool isFunctionStatemant()
 {
-	if (checkVariable())
+	if (isVariable())
 	{
 		if (_tempTokenTableIterator->tokenName == "(")
 		{
@@ -158,22 +158,22 @@ bool isForLoopStatement()
 
 bool isIncrementOrDecrementStatement()
 {
-	if (checkId())
+	if (isIdentifier())
 	{
 		addSymbol(newSymbol);
 		newSymbol = Symbol();
 
-		if (tempIter->tokenName == "++" || tempIter->tokenName == "--")
+		if (_tempTokenTableIterator->tokenName == "++" || _tempTokenTableIterator->tokenName == "--")
 		{
-			tempIter++;
-			if (tempIter->tokenName == ";")
+			_tempTokenTableIterator++;
+			if (_tempTokenTableIterator->tokenName == ";")
 			{
-				tempIter++;
+				_tempTokenTableIterator++;
 				return true;
 			}
 			cout << "Error: Missing semicolon on increment decrement statement." << endl;
 		}
-		tempIter = tokenIter;
+		_tempTokenTableIterator = _tokenTableIterator;
 		return false;
 	}
 	return false;
@@ -186,63 +186,63 @@ bool isInputOrOutputStatement()
 
 bool isReturnStatement()
 {
-	if (tempIter->tokenName == "return")
+	if (_tempTokenTableIterator->tokenName == "return")
 	{
-		tempIter++;
-		if (checkValue())
+		++_tempTokenTableIterator;
+		if (isValue())
 		{
 
-			if (tempIter->tokenName == ";")
+			if (_tempTokenTableIterator->tokenName == ";")
 			{
-				tempIter++;
+				++_tempTokenTableIterator;
 				return true;
 			}
 			return false;
 		}
-		else if (checkId())
+		else if (isIdentifier())
 		{
-			if (tempIter->tokenName == ";")
+			if (_tempTokenTableIterator->tokenName == ";")
 			{
-				addSymbol(newSymbol);
+				AddSymbol(newSymbol);
 				newSymbol = Symbol();
-				tempIter++;
+				_tempTokenTableIterator++;
 				return true;
 			}
 		}
 	}
 
-	tempIter = tokenIter;
+	_tempTokenTableIterator = _tokenTableIterator;
+
 	return false;
 }
 
 bool isRELOPStatement()
 {
-	vector<Token>::iterator myNewTempIter = tempIter;
-	//	cout << "checking varlist" << endl;
-	if (checkVariable())
+	vector<Token>::iterator _newTempIterator = _tempTokenTableIterator;
+	if (isVariable())
 	{
 		addSymbol(newSymbol);
 		newSymbol = Symbol();
-		if (tempIter->tokenName == ",")
+		if (_tempTokenTableIterator->tokenName == ",")
 		{
-			tempIter++;
-			return checkVarList();
+			++_tempTokenTableIterator;
+			return isVariableList();
 		}
 		return true;
 	}
-	tempIter = myNewTempIter;;
+
+	_tempTokenTableIterator = _newTempIterator;
+
 	return true;
 }
 
 bool isVariableList()
 {
-	//	cout << "checking variable" << endl;
-	//tempIter = tokenIter;
-	if (checkType())
+	if (isType())
 	{
-		return checkId();
+		return isIdentifier();
 	}
-	else return checkId();
+	else return isIdentifier();
 }
 
 bool isVariable()

@@ -21,11 +21,11 @@
 *     Exit:		n/a
 *
 ****************************************************************/
-Rules::Rules(string passedKey, string passedValue, string passedElements)
+Rules::Rules(string key, string value, string elements)
 {
-	key = passedKey;
-	value = passedValue;
-	elements = passedElements;
+	key_ = key;
+	value_ = value;
+	elements_ = elements;
 }
 
 /**************************************************************
@@ -51,4 +51,40 @@ Rules::Rules()
 ****************************************************************/
 Rules::~Rules()
 {
+}
+
+/**************************************************************
+*	  Purpose:  
+*
+*     Entry:	n/a
+*
+*     Exit:		n/a
+*
+****************************************************************/
+string Rules::GetKey() {
+	return key_;
+}
+
+/**************************************************************
+*	  Purpose:
+*
+*     Entry:	n/a
+*
+*     Exit:		n/a
+*
+****************************************************************/
+string Rules::GetValue() {
+	return value_;
+}
+
+/**************************************************************
+*	  Purpose:
+*
+*     Entry:	n/a
+*
+*     Exit:		n/a
+*
+****************************************************************/
+string Rules::GetElements() {
+	return elements_;
 }

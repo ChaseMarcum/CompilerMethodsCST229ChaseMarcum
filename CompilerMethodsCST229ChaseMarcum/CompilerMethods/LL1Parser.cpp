@@ -16,16 +16,17 @@
 #include <fstream>
 #include <iostream>
 
-
 LL1Parser::LL1Parser(string fileName, TokenTable tokens)
 {
 	ifstream in;
 	in.open(fileName);
+
 	if (in.fail())
 	{
-		cout << "The filename you have entered isinvalid. Closing program.";
+		cout << "Error: Filename not found. Closing program.";
 		exit(1);
 	}
+
 	string myString;
 
 	while (!in.eof())
@@ -44,24 +45,25 @@ LL1Parser::LL1Parser(string fileName, TokenTable tokens)
 		cout << third << endl;
 		Rules tempRule = Rules(first, second, third);
 		myRules.push_back(tempRule);
-		//.insert(myString);
 	}
 
-	vector<Token>::iterator tokenIter = tokens.tokenTableVector.end();
+	vector<Token>::iterator tokenIterator = tokens.tokenTableVector.end();
 	vector<Token>::iterator stop = tokens.tokenTableVector.begin();
-	--tokenIter;
+	--tokenIterator;
 	tokenStack.push(Token("$", "end"));
-	while (tokenIter != stop)
-	{
-		tokenStack.push(*tokenIter);
-		cout << tokenIter->tokenName << endl;
-		--tokenIter;
 
+	while (tokenIterator != stop)
+	{
+		tokenStack.push(*tokenIterator);
+		cout << tokenIterator->tokenName << endl;
+		--tokenIterator;
 	}
-	tokenStack.push(*tokenIter);
-	cout << tokenIter->tokenName << endl;
+
+	tokenStack.push(*tokenIterator);
+	cout << tokenIterator->tokenName << endl;
 
 	bool awesome = Run();
+
 	if (awesome)
 	{
 		cout << "true";
@@ -76,7 +78,6 @@ LL1Parser::LL1Parser()
 {
 }
 
-
 LL1Parser::~LL1Parser()
 {
 }
@@ -85,10 +86,10 @@ void LL1Parser::AddRules(int ruleNumber)
 {
 	string ruleString = myRules[ruleNumber].elements;
 	stack<string> tempStack;
+
 	while (ruleString.find(" ") != string::npos)
 	{
 		string tempString;
-
 
 		unsigned end = ruleString.find(" ");
 
@@ -97,8 +98,8 @@ void LL1Parser::AddRules(int ruleNumber)
 		cout << tempString << endl;
 
 		tempStack.push(tempString);
-
 	}
+
 	tempStack.push(ruleString.substr(0, ruleString.length()));
 
 	while (!tempStack.empty())
@@ -113,45 +114,42 @@ bool LL1Parser::Run()
 {
 	ruleStack.push("$");
 	ruleStack.push("S");
+
 	while (!ruleStack.empty() && !tokenStack.empty())
 	{
-
-
 		string currentKey = ruleStack.top();
 		Token currentToken = tokenStack.top();
 		int ruleNumber;
 
 		for (int a = 0; a < myRules.size(); a++)
 		{
-
-
 		}
 		int a;
 		bool isARule = false;
-		bool ruleAdded = false;
-		int tries = 0;
+		bool isRuleAdded = false;
+		int count = 0;
 		for (a = 0; a < myRules.size(); a++)
 		{
-			if (myRules[a].key == currentKey && currentToken.tokenName == myRules[a].value ||
-				(myRules[a].key == currentKey && myRules[a].value == "ID" && currentToken.tokenType == "Identifier") ||
-				myRules[a].key == currentKey && myRules[a].elements == "lambda")
+			if (myRules[a].GetKey() == currentKey &&
+				currentToken.tokenName == myRules[a].GetValue() ||
+				(myRules[a].GetKey() == currentKey &&
+				myRules[a].GetValue() == "ID" &&
+				currentToken.tokenType == "Identifier") ||
+				myRules[a].GetKey() == currentKey &&
+				myRules[a].GetElements() == "lambda")
 			{
-
-
-				if (myRules[a].elements == "lambda")
+				if (myRules[a].GetElements() == "lambda")
 				{
 					ruleStack.pop();
-					ruleAdded = true;
+					isRuleAdded = true;
 					break;
 				}
 				else
 				{
-
 					ruleNumber = a;
 					ruleStack.pop();
 					AddRules(a);
-					ruleAdded = true;
-					//addRules(currentKey);
+					isRuleAdded = true;
 					break;
 				}
 			}
@@ -160,52 +158,60 @@ bool LL1Parser::Run()
 			{
 				return true;
 			}
-			if (myRules[a].key == currentKey)
+
+			if (myRules[a].GetKey() == currentKey)
 			{
 				isARule = true;
 			}
-			tries++;
+
+			++count;
 		}
-		if (tries == myRules.size() && isARule)
+
+		if (count == myRules.size() && isARule)
 		{
 			return false;
 		}
+
 		cout << ruleStack.top() << " " << tokenStack.top().tokenName << endl;
 
 		if (ruleStack.top() == tokenStack.top().tokenName)
 		{
-
 			cout << "popping " << ruleStack.top() << " from the ruleStack" << endl;
-			ruleStack.pop();
-			cout << "popping " << tokenStack.top().tokenName << " from the tokenStack" << endl;
-			tokenStack.pop();
 
+			ruleStack.pop();
+
+			cout << "popping " << tokenStack.top().tokenName << " from the tokenStack"
+				<< endl;
+
+			tokenStack.pop();
 		}
 		else if (ruleStack.top() == "NUM" && tokenStack.top().tokenType == "Integer")
 		{
 			cout << "popping " << ruleStack.top() << " from the ruleStack" << endl;
+
 			ruleStack.pop();
-			cout << "popping " << tokenStack.top().tokenName << " from the tokenStack" << endl;
+			cout << "popping " << tokenStack.top().tokenName << " from the tokenStack"
+				<< endl;
+
 			tokenStack.pop();
 		}
 		else if (ruleStack.top() == "ID" && tokenStack.top().tokenType == "Identifier")
 		{
 			cout << "popping " << ruleStack.top() << " from the ruleStack" << endl;
+
 			ruleStack.pop();
-			cout << "popping " << tokenStack.top().tokenName << " from the tokenStack" << endl;
+			cout << "popping " << tokenStack.top().tokenName << " from the tokenStack"
+				<< endl;
 			tokenStack.pop();
 		}
-		else if (isARule == false && ruleStack.top() != tokenStack.top().tokenName && ruleAdded == false)
+		else if (isARule == false && ruleStack.top() != tokenStack.top().tokenName
+			&& isRuleAdded == false)
 		{
 			return false;
 		}
 
-		ruleAdded = false;
-
-
+		isRuleAdded = false;
 	}
-
-
 
 	return true;
 }

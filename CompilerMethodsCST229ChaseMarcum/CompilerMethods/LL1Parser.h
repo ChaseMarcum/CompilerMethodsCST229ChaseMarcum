@@ -34,31 +34,38 @@ public:
 	stack<string> ruleStack;
 
 	/**************************************************************
-	*	  Purpose:  Constructor of LL1Parser
+	*	  Purpose:  Constructor of LL1Parser and sets initial
+	*				state of variable members
 	*
-	*     Entry:	n/a
+	*     Entry:	string filName, TokenTable tokens
 	*
 	*     Exit:		n/a
+	*
 	****************************************************************/
 	LL1Parser(string fileName, TokenTable tokens);
 
 	/**************************************************************
-	*	  Purpose:  Constructor of LL1Parser
+	*	  Purpose:  Default constructor for LL1Parser no variable
+	*				members set
 	*
 	*     Entry:	n/a
 	*
 	*     Exit:		n/a
+	*
 	****************************************************************/
 	LL1Parser();
 
 	/**************************************************************
-	*	  Purpose:  Constructor of LL1Parser
+	*	  Purpose:  Destructor of LL1Parser
 	*
 	*     Entry:	n/a
 	*
 	*     Exit:		n/a
+	*
 	****************************************************************/
 	~LL1Parser();
+
+
 	void AddRules(int ruleNumber);
 	bool Run();
 };
