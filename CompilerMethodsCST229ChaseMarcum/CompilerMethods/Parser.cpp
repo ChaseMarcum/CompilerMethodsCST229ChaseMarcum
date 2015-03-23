@@ -5,39 +5,66 @@
 
 using namespace std;
 
+/**************************************************************
+*	  Purpose:  Constructor of Parser and sets initial
+*				variable members
+*
+*     Entry:	n/a
+*
+*     Exit:		Initiates call to start the Parser and ask user
+*				to input filename.
+*
+****************************************************************/
 Parser::Parser() {
-	fileName_ = GetFileName();
-	startState_ = State("startState");
-	numericState_ = State("numericState");
-	alphaNumState_ = State("alphaNumState");
-	symbolState_ = State("symbolState");
-	doubleSymbolState_ = State("doubleSymbolState");
-	illegalState_ = State("illegalState");
-	defineState_ = State("defineState");
-	symbolTable_ = SymbolTable();
-	tokenTable_ = TokenTable();
-	ifPreprocess_ = true;
-	currentState_ = startState_;
-	partialString_ = "";
-	doubleSymbols_ = "+-*/=|<>:&%!";
-	invalidSymbols_ = "$@~";
-	previousLetter_ = NULL;
-	preprocessString_ = "";
+	fileName_ =				GetFileName();
+	startState_ =			State("startState");
+	numericState_ =			State("numericState");
+	alphaNumState_ =		State("alphaNumState");
+	symbolState_ =			State("symbolState");
+	doubleSymbolState_ =	State("doubleSymbolState");
+	illegalState_ =			State("illegalState");
+	defineState_ =			State("defineState");
+	symbolTable_ =			SymbolTable();
+	tokenTable_ =			TokenTable();
+	ifPreprocess_ =			true;
+	currentState_ =			startState_;
+	partialString_ =		"";
+	doubleSymbols_ =		"+-*/=|<>:&%!";
+	invalidSymbols_ =		"$@~";
+	previousLetter_ =		NULL;
+	preprocessString_ =		"";
 
-	FillList();
+	InitializeKeyword();
 }
 
-
+/**************************************************************
+*	  Purpose:  Deconstructor of Parser
+*
+*     Entry:	n/a
+*
+*     Exit:		n/a
+****************************************************************/
 Parser::~Parser() {}
 
-//This function prompts the user for a file name to be parsed, and returns it.
+/**************************************************************
+*	  Purpose:  prompts the user for a file name to be parsed.
+*
+*     Entry:	n/a
+*
+*     Exit:		Returns File
+****************************************************************/
 string Parser::GetFileName() {
 
 	string getFile;
 
-	cout << "What is the name of the file you want parsed?" << endl;
-	cout << "Your options are \"test1.txt\", \"test2.txt\", and \"test3.txt\" or a user made file." << endl;
-	cout << "Your choice?: ";
+	cout << "CST 320 Compiler Methods\n";
+	cout << "Lab #1 Preprocessor & Lexical Analyzer\n\n";
+	cout << "This program will analyze JavaScript files.\n";
+
+	cout << "Please type the name of the JavaScript file \n"
+		<< "you would like to analyze:\n\n"
+		<< "Built in test files you may run:\n"
+		<< "Test1.js, Test2.js, Test3.js\n\n";
 
 	cin >> getFile;
 	cout << endl;
@@ -45,40 +72,54 @@ string Parser::GetFileName() {
 	return getFile;
 }
 
-//This function reads lines from the keywords.txt file into a set.
-void Parser::FillList() {
+/**************************************************************
+*	  Purpose:  Sets keywords.
+*
+*     Entry:	n/a
+*
+*     Exit:		n/a
+****************************************************************/
+void Parser::InitializeKeyword() {
 
-	ifstream in;
-	in.open("keywords.txt");//replace text with fileName
-
-	if (in.fail()) {
-
-		cout << "The filename you have entered isinvalid. Closing program.";
-		exit(1);
-	}
-
-	string myString;
-
-	while (!in.eof()) {
-
-		getline(in, myString);
-		keywords_.insert(myString);
-	}
-
-	in.close();
+	keywords_.insert = "break";
+	keywords_.insert = "case";
+	keywords_.insert = "catch";
+	keywords_.insert = "continue";
+	keywords_.insert = "debugger";
+	keywords_.insert = "default";
+	keywords_.insert = "delete";
+	keywords_.insert = "do";
+	keywords_.insert = "else";
+	keywords_.insert = "finally";
+	keywords_.insert = "for";
+	keywords_.insert = "function";
+	keywords_.insert = "if";
+	keywords_.insert = "in";
+	keywords_.insert = "instanceof";
+	keywords_.insert = "new";
+	keywords_.insert = "return";
+	keywords_.insert = "switch";
+	keywords_.insert = "this";
+	keywords_.insert = "throw";
+	keywords_.insert = "try";
+	keywords_.insert = "typeof";
+	keywords_.insert = "var";
+	keywords_.insert = "void";
+	keywords_.insert = "while";
+	keywords_.insert = "with";
 }
 
 //This function reads in the text file specified by the user and sends it's contents into a string.
 //It then creates the top of the word type pair list and creates an iterator to the string.
 //It then loops through the string and calls the process function on each character.
-void Parser::Run() {
+void Parser::Start() {
 
 	ifstream in;
-	in.open(fileName_);//replace text with fileName
+	in.open(fileName_);
 
 	if (in.fail()) {
 
-		cout << "The filename you have entered isinvalid. Closing program.";
+		cout << "Error: Invalid File";
 		exit(1);
 	}
 
@@ -101,7 +142,11 @@ void Parser::Run() {
 
 	iterator_ = textString_.begin();
 
-	cout << setw(20) << left << "Input" << "Return" << endl << "---------------------------" << endl;
+	cout << "Analyzing JavaScript File\n\n";
+	cout << "=======================    ================\n";
+	cout << "||   PARCED TOKEN    ||    || TOKEN TYPE ||\n";
+	cout << "=======================    ================\n\n";
+
 
 	while (iterator_ != textString_.end()) {
 
@@ -136,11 +181,13 @@ void Parser::Run() {
 		++tokenIter;
 	}
 
-	cout << endl << endl << endl;
-	cout << "Please enter the name of the LL1 rule file: ";
+	
+	cout << "\n\n";
+	cout << "CST 320 Compiler Methods\n";
+	cout << "Recursive Descent parser\n\n";
+	cout << "This program will analyze the provious JavaScript file\n\n";
 	cin >> fileName_;
 	ll1Parser_ = LL1Parser(fileName_, tokenTable_);
-	cout << endl << endl << endl;
 }
 
 //This function sends the program to the correct process function based on the current state.

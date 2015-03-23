@@ -20,6 +20,7 @@
 #define RECURSIVEDESCENTPARSER_H
 #include "TokenTable.h"
 #include "SymbolTable.h"
+#include "Parser.h"
 #include <set>
 
 using namespace std;
@@ -97,21 +98,21 @@ public:
 
 	/**************************************************************
 	*	  Purpose:  Checks if Token is a vailid JavaScript
-	*				Declaration Statement
+	*			    Statement List
 	*
 	*     Entry:	The current Token
 	*
-	*     Exit:		A Boolean if Token is an valid Declaration Statement
+	*     Exit:		A Boolean if Token is an valid Statement List
 	****************************************************************/
 	bool isStatementList();
 
 	/**************************************************************
 	*	  Purpose:  Checks if Token is a vailid JavaScript
-	*				Declaration Statement
+	*				Statement
 	*
 	*     Entry:	The current Token
 	*
-	*     Exit:		A Boolean if Token is an valid Declaration Statement
+	*     Exit:		A Boolean if Token is an valid Statement
 	****************************************************************/
 	bool isStatement();
 
@@ -134,6 +135,16 @@ public:
 	*     Exit:		A Boolean if Token is an valid Function Statement
 	****************************************************************/
 	bool isFunctionStatemant();
+
+	/**************************************************************
+	*	  Purpose:  Checks if Token is a vailid JavaScript
+	*				If Else Statement
+	*
+	*     Entry:	The current Token
+	*
+	*     Exit:		A Boolean if Token is an valid If Else Statement
+	****************************************************************/
+	bool isIfElseStatement();
 
 	/**************************************************************
 	*	  Purpose:  Checks if Token is a vailid JavaScript

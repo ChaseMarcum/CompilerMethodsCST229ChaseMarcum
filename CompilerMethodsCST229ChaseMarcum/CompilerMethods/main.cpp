@@ -30,10 +30,24 @@ void main()
 	bool ifContinue = true;
 	string userInput;
 
-	while (ifContinue) {
+	// Lab 1
+	/*while (ifContinue) {
 		LexicalAnalyzer _lexicalAnalyzer;
 
 		_lexicalAnalyzer.Start();
+
+		cout << "\nWould you like to run another file? (y/n): ";
+		cin >> userInput;
+
+		if (userInput == "n" || userInput == "N") {
+			ifContinue = false;
+		}
+	}*/
+
+	// Lab2
+	while (ifContinue) {
+		Parser _parser = Parser();
+		_parser.Start();
 
 		cout << "\nWould you like to run another file? (y/n): ";
 		cin >> userInput;

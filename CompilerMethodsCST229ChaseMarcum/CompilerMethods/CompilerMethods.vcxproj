@@ -109,6 +109,9 @@
     <None Include="Test2.js" />
     <None Include="Test3.js" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="keywords.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

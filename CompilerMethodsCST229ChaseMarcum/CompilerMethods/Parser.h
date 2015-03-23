@@ -36,17 +36,10 @@ public:
 	State doubleSymbolState_;
 	State illegalState_;
 	State defineState_;
-
-	LanguageChecker languageChecker_;
-
 	LL1Parser ll1Parser_;
-
 	bool ifPreprocess_;
-
 	SymbolTable symbolTable_;
-
 	TokenTable tokenTable_;
-
 	string fileName_;
 	string textString_;
 	string partialString_;
@@ -54,20 +47,15 @@ public:
 	string doubleSymbols_;
 	string invalidSymbols_;
 	string tempTextString_;
-
 	string::iterator iterator_;
-
 	set<string> keywords_;
-
 	char previousLetter_;
-
-	
 
 	Parser();
 	~Parser();
 	string GetFileName();
 	
-	void FillList();
+	void InitializeKeyword();
 
 	void PrintPartial();
 
@@ -89,7 +77,7 @@ public:
 
 	void AddSymbol(string name, string value);
 
-	void Run();
+	void Start();
 
 	
 };

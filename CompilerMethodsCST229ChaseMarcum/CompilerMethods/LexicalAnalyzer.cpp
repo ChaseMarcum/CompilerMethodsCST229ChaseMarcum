@@ -21,12 +21,14 @@
 ************************************************************/
 
 #include "LexicalAnalyzer.h"
+#include "Parser.h"
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <cctype>
 #include <iomanip>
 #include <Windows.h>
+
 
 /**************************************************************
 *	  Purpose:  Constructor of Lexical Analyzer
@@ -63,8 +65,8 @@ void LexicalAnalyzer::Start() {
 	filename_ = ConsoleDisplay();
 	inputFile_.open(filename_);
 
-	while (!inputFile_.is_open())
-	{
+	while (!inputFile_.is_open()) {
+
 		cout << "\n\nFile is invalid.";
 		filename_ = ConsoleDisplay();
 		inputFile_.open(filename_);
@@ -100,13 +102,6 @@ string LexicalAnalyzer::ConsoleDisplay() {
 	cin >> filename;
 
 	return filename;
-
-	cout << "\n\n";
-	cout << "CST 320 Compiler Methods\n";
-	cout << "Lab #2 Recursive Descent Parser(List of statements & Some Semantic Analysis)\n\n";
-	cout << "This program will analyze the provious JavaScript file\n\n";
-
-	recursiveDescentParser_.Start();
 }
 
 /**************************************************************
@@ -230,12 +225,12 @@ bool LexicalAnalyzer::isOperator(char currentChar) {
 		currentChar == '^' || currentChar == '&' || currentChar == '|' ||
 		currentChar == '-' || currentChar == '+' || currentChar == '=' ||
 		currentChar == '<' || currentChar == '>' || currentChar == '?' ||
-		currentChar == '.')
-	{
+		currentChar == '.') {
+
 		return true;
 	}
-	else if (currentChar == '/' || currentChar == '*')
-	{
+	else if (currentChar == '/' || currentChar == '*') {
+
 		string tempToken;
 		int tempPosition = position_;
 		tempToken = lineOfCode_.at(tempPosition);
@@ -266,8 +261,8 @@ bool LexicalAnalyzer::isOperator(char currentChar) {
 bool LexicalAnalyzer::isPreprocessorDirective(string currentWord) {
 	// Check for all symbols that ARE preprocessor directives in JS
 	for (int i = 0; i < NUMBER_OF_PREPROCESSORDIRECTIVE; i++) {
-		if (currentWord == validPreprocessorDirective_[i])
-		{
+		if (currentWord == validPreprocessorDirective_[i]) {
+
 			return true;
 		}
 	}
@@ -284,25 +279,25 @@ bool LexicalAnalyzer::isPreprocessorDirective(string currentWord) {
 void LexicalAnalyzer::ReadIdentifier(bool valid) {
 	while (lineOfCode_.length() > position_ &&
 		(isIdentifier(lineOfCode_.at(position_)) ||
-		isInt(lineOfCode_.at(position_))))
-	{
+		isInt(lineOfCode_.at(position_)))) {
+
 		currentToken_ += lineOfCode_.at(position_++);
 	}
 
-	if (isPreprocessorDirective(currentToken_))
-	{
+	if (isPreprocessorDirective(currentToken_)) {
+
 		HandlePreprocessorDirective(currentChar_, "PreprocessorDirective");
 	}
-	else if (isKeyword(currentToken_))
-	{
+	else if (isKeyword(currentToken_)) {
+
 		AddToSymbolTable("Keyword");
 	}
-	else if (valid)
-	{
+	else if (valid) {
+
 		AddToSymbolTable("Identifier");
 	}
-	else
-	{
+	else {
+
 		AddToSymbolTable("ERROR", "\tIllegal Identifier or Integer");
 	}
 }
@@ -319,8 +314,8 @@ void LexicalAnalyzer::ReadInt() {
 
 	while (lineOfCode_.length() > position_ && (isInt(lineOfCode_.at(position_)) ||
 		(lineOfCode_.at(position_) == '.' && !isFloat))) {
-		if (lineOfCode_.at(position_) == '.')
-		{
+		if (lineOfCode_.at(position_) == '.') {
+
 			isFloat = true;
 		}
 
@@ -328,14 +323,15 @@ void LexicalAnalyzer::ReadInt() {
 	}
 
 	if (lineOfCode_.length() > position_ &&  isIdentifier(lineOfCode_.at(position_))) {
+
 		ReadIdentifier(false);
 	}
-	else if (isFloat)
-	{
+	else if (isFloat) {
+
 		AddToSymbolTable("Float");
 	}
-	else
-	{
+	else {
+
 		AddToSymbolTable("Integer");
 	}
 }
@@ -348,18 +344,18 @@ void LexicalAnalyzer::ReadInt() {
 *     Exit:		n/a
 ****************************************************************/
 void LexicalAnalyzer::ReadSymbol() {
-	if (isOperator(lineOfCode_.at(position_)))
-	{
+	if (isOperator(lineOfCode_.at(position_))) {
+
 		currentToken_ = lineOfCode_.at(position_++);
 		AddToSymbolTable("Operator");
 	}
-	else if (isSymbol(lineOfCode_.at(position_)))
-	{
+	else if (isSymbol(lineOfCode_.at(position_))) {
+
 		currentToken_ = lineOfCode_.at(position_++);
 		AddToSymbolTable("Symbol");
 	}
-	else
-	{
+	else {
+
 		currentToken_ = lineOfCode_.at(position_++);
 		AddToSymbolTable("ERROR", "\tIllegal symbol");
 	}
@@ -373,12 +369,12 @@ void LexicalAnalyzer::ReadSymbol() {
 *     Exit:		Error message
 ****************************************************************/
 void LexicalAnalyzer::Print(string type, string errorMessage) {
-	if (type == "ERROR")
-	{
+	if (type == "ERROR") {
+
 		SetConsoleTextAttribute(hConsole_, 0xc);
 	}
-	else if (type == "Keyword")
-	{
+	else if (type == "Keyword") {
+
 		SetConsoleTextAttribute(hConsole_, 0xa);
 	}
 
@@ -400,13 +396,14 @@ void LexicalAnalyzer::Print(string type, string errorMessage) {
 ****************************************************************/
 void LexicalAnalyzer::AddToSymbolTable(string type, string errorMessage)
 {
-	if (type != "Comment"){
-		if (type == "ERROR")
-		{
+	if (type != "Comment") {
+
+		if (type == "ERROR") {
+
 			SetConsoleTextAttribute(hConsole_, 0xc);
 		}
-		else if (type == "Keyword")
-		{
+		else if (type == "Keyword") {
+
 			SetConsoleTextAttribute(hConsole_, 0xa);
 		}
 
@@ -437,12 +434,12 @@ void LexicalAnalyzer::AddToSymbolTable(string type, string errorMessage)
 *     Exit:		Error message
 ****************************************************************/
 void LexicalAnalyzer::HandlePreprocessorDirective(char currentChar, string type, string errorMessage){
-	if (type == "ERROR")
-	{
+	if (type == "ERROR") {
+
 		SetConsoleTextAttribute(hConsole_, 0xc);
 	}
-	else if (currentToken_ == "#define")
-	{
+	else if (currentToken_ == "#define") {
+
 		currentSymbol_.symbolName = currentToken_;
 		currentSymbol_.symbolType = type;
 		currentVectorToken_.tokenName = currentToken_;
@@ -450,29 +447,34 @@ void LexicalAnalyzer::HandlePreprocessorDirective(char currentChar, string type,
 
 		currentToken_ = "";
 
-		while (lineOfCode_.length() > position_)
-		{
+		while (lineOfCode_.length() > position_) {
+
 			currentChar = lineOfCode_.at(position_);
 
-			if (isInt(currentChar))
-			{
+			if (isInt(currentChar)) {
+
 				bool isFloat = false;
 
-				while (lineOfCode_.length() > position_ && (isInt(lineOfCode_.at(position_)) ||
-					(lineOfCode_.at(position_) == '.' && !isFloat))) {
-					if (lineOfCode_.at(position_) == '.')
-					{
+				while (lineOfCode_.length() > position_ && 
+					(isInt(lineOfCode_.at(position_)) ||
+					(lineOfCode_.at(position_) == '.' && 
+					!isFloat))) {
+
+					if (lineOfCode_.at(position_) == '.') {
+
 						isFloat = true;
 					}
 
 					currentToken_ += lineOfCode_.at(position_++);
 				}
 
-				if (lineOfCode_.length() > position_ &&  isIdentifier(lineOfCode_.at(position_))) {
+				if (lineOfCode_.length() > position_ &&  
+					isIdentifier(lineOfCode_.at(position_))) {
+
 					ReadIdentifier(false);
 				}
-				else if (isFloat)
-				{
+				else if (isFloat) {
+
 					currentSymbol_.symbolValue = currentToken_;
 					currentVectorToken_.tokenValue = currentToken_;
 					symbolTable_.AddSymbol(currentSymbol_);
@@ -488,32 +490,32 @@ void LexicalAnalyzer::HandlePreprocessorDirective(char currentChar, string type,
 
 					position_++;
 
-					while (lineOfCode_.length() > position_)
-					{
+					while (lineOfCode_.length() > position_) {
+
 						currentChar = lineOfCode_.at(position_);
 
-						if (isInt(currentChar))
-						{
+						if (isInt(currentChar)) {
+
 							ReadInt();
 						}
-						else if (currentChar == ' ' || currentChar == '\t')
-						{
+						else if (currentChar == ' ' || currentChar == '\t') {
+
 							position_++;
 						}
-						else if (isIdentifier(currentChar))
-						{
+						else if (isIdentifier(currentChar)) {
+
 							ReadIdentifier();
 						}
-						else
-						{
+						else {
+
 							ReadSymbol();
 						}
 					}
 
 					ReadFile();
 				}
-				else
-				{
+				else {
+
 					currentSymbol_.symbolValue = currentToken_;
 					currentVectorToken_.tokenValue = currentToken_;
 					symbolTable_.AddSymbol(currentSymbol_);
@@ -529,24 +531,24 @@ void LexicalAnalyzer::HandlePreprocessorDirective(char currentChar, string type,
 
 					position_++;
 
-					while (lineOfCode_.length() > position_)
-					{
+					while (lineOfCode_.length() > position_) {
+
 						currentChar = lineOfCode_.at(position_);
 
-						if (isInt(currentChar))
-						{
+						if (isInt(currentChar)) {
+
 							ReadInt();
 						}
-						else if (currentChar == ' ' || currentChar == '\t')
-						{
+						else if (currentChar == ' ' || currentChar == '\t') {
+
 							position_++;
 						}
-						else if (isIdentifier(currentChar))
-						{
+						else if (isIdentifier(currentChar)) {
+
 							ReadIdentifier();
 						}
-						else
-						{
+						else {
+
 							ReadSymbol();
 						}
 					}
@@ -554,25 +556,25 @@ void LexicalAnalyzer::HandlePreprocessorDirective(char currentChar, string type,
 					ReadFile();
 				}
 			}
-			else if (currentChar == ' ' || currentChar == '\t' || currentChar == '=')
-			{
+			else if (currentChar == ' ' || currentChar == '\t' || currentChar == '=') {
+
 				position_++;
 			}
-			else if (isIdentifier(currentChar))
-			{
+			else if (isIdentifier(currentChar)) {
+
 				ReadIdentifierForPreDirective();
 			}
-			else
-			{
+			else {
+
 				AddToSymbolTable("ERROR", "\tIllegal Identifier or Integer");
 			}
 		}
 	}
-	else if (currentToken_ == "#ifndef")
-	{
+	else if (currentToken_ == "#ifndef") {
+
 	}
-	else if (currentToken_ == "#endif")
-	{
+	else if (currentToken_ == "#endif") {
+
 	}
 }
 
@@ -584,25 +586,26 @@ void LexicalAnalyzer::HandlePreprocessorDirective(char currentChar, string type,
 *     Exit:		n/a
 ****************************************************************/
 void LexicalAnalyzer::ReadIdentifierForPreDirective(bool valid) {
+
 	while (lineOfCode_.length() > position_ &&
 		(isIdentifier(lineOfCode_.at(position_)) ||
-		isInt(lineOfCode_.at(position_))))
-	{
+		isInt(lineOfCode_.at(position_)))) {
+
 		currentToken_ += lineOfCode_.at(position_++);
 	}
 
-	if (isKeyword(currentToken_))
-	{
+	if (isKeyword(currentToken_)) {
+
 		AddToSymbolTable("Keyword");
 	}
-	else if (valid)
-	{
+	else if (valid) {
+
 		currentSymbol_.symbolUse = currentToken_;
 		currentVectorToken_.tokenValue = currentToken_;
 		currentToken_ = "";
 	}
-	else
-	{
+	else {
+
 		AddToSymbolTable("ERROR", "\tIllegal Identifier or Integer");
 	}
 }
@@ -614,21 +617,21 @@ void LexicalAnalyzer::ReadIdentifierForPreDirective(bool valid) {
 *
 *     Exit:		n/a
 ****************************************************************/
-void LexicalAnalyzer::ReadComment(bool valid)
-{
-	if (currentToken_ == "/*")
-	{
-		while (lineOfCode_.length() > position_)
-		{
+void LexicalAnalyzer::ReadComment(bool valid) {
+
+	if (currentToken_ == "/*") {
+
+		while (lineOfCode_.length() > position_) {
+
 			currentChar_ = lineOfCode_.at(position_);
 
-			if (currentChar_ == '*')
-			{
+			if (currentChar_ == '*') {
+
 				currentToken_ = "*";
 				currentToken_ += lineOfCode_.at(position_++);
 
-				if (currentToken_ == "*/")
-				{
+				if (currentToken_ == "*/") {
+
 					ReadFile();
 				}
 			}
@@ -636,22 +639,22 @@ void LexicalAnalyzer::ReadComment(bool valid)
 			position_++;
 		}
 
-		while (!inputFile_.eof())
-		{
+		while (!inputFile_.eof()) {
+
 			position_ = 0;
 			getline(inputFile_, lineOfCode_);
 
-			while (lineOfCode_.length() > position_)
-			{
+			while (lineOfCode_.length() > position_) {
+
 				currentChar_ = lineOfCode_.at(position_);
 
-				if (currentChar_ == '*')
-				{
+				if (currentChar_ == '*') {
+
 					currentToken_ = "*";
 					currentToken_ += lineOfCode_.at(position_++);
 
-					if (currentToken_ == "*/")
-					{
+					if (currentToken_ == "*/") {
+
 						ReadFile();
 					}
 				}
@@ -660,34 +663,34 @@ void LexicalAnalyzer::ReadComment(bool valid)
 			}
 		}
 	}
-	else if (currentToken_ == "//")
-	{
+	else if (currentToken_ == "//") {
+
 		position_ = lineOfCode_.length() - 1;
 		currentToken_ = "";
 		AddToSymbolTable("Comment");
 	}
-	else if (currentToken_ == "*/")
-	{
+	else if (currentToken_ == "*/") {
+
 		currentToken_ = "";
 
-		while (lineOfCode_.length() > position_)
-		{
+		while (lineOfCode_.length() > position_) {
+
 			currentChar_ = lineOfCode_.at(position_);
 
-			if (isInt(currentChar_))
-			{
+			if (isInt(currentChar_)) {
+
 				ReadInt();
 			}
-			else if (currentChar_ == ' ' || currentChar_ == '\t')
-			{
+			else if (currentChar_ == ' ' || currentChar_ == '\t') {
+
 				position_++;
 			}
-			else if (isIdentifier(currentChar_))
-			{
+			else if (isIdentifier(currentChar_)) {
+
 				ReadIdentifier();
 			}
-			else
-			{
+			else {
+
 				ReadSymbol();
 			}
 		}
