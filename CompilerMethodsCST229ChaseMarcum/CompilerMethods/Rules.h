@@ -16,13 +16,9 @@
 
 using namespace std;
 
-class Rules
-{
-public:
-	string key;
-	string value;
-	string elements;
+class Rules {
 
+public:
 	/**************************************************************
 	*	  Purpose:  Constructor of Rules and sets initial
 	*				state of variable members
@@ -56,31 +52,31 @@ public:
 	~Rules();
 
 	/**************************************************************
-	*	  Purpose:
+	*	  Purpose:  Returns member variable of key
 	*
 	*     Entry:	n/a
 	*
-	*     Exit:		n/a
+	*     Exit:		Returns member variable of key
 	*
 	****************************************************************/
 	string GetKey();
 
 	/**************************************************************
-	*	  Purpose:
+	*	  Purpose:  Returns member variable of value
 	*
 	*     Entry:	n/a
 	*
-	*     Exit:		n/a
+	*     Exit:		Returns member variable of value
 	*
 	****************************************************************/
 	string GetValue();
 
 	/**************************************************************
-	*	  Purpose:
+	*	  Purpose:  Returns member variable of element
 	*
 	*     Entry:	n/a
 	*
-	*     Exit:		n/a
+	*     Exit:		Returns member variable of element
 	*
 	****************************************************************/
 	string GetElements();

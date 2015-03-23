@@ -14,12 +14,11 @@
 #ifndef TOKEN_H
 #define TOKEN_H
 #include <string>
-#include <iostream>
 
 using namespace std;
 
-class Token
-{
+class Token {
+
 public:
 
 	string tokenName;		// Name of Token
@@ -66,8 +65,8 @@ public:
 	*     Exit:		Returns true if lhs less than rhs, else false
 	****************************************************************/
 	friend bool Token::operator<(const Token& lhs,
-		const Token& rhs)
-	{
+								 const Token& rhs) {
+
 		return(lhs.tokenName < rhs.tokenName);
 	}
 };

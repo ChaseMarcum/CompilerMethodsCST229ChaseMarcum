@@ -25,7 +25,7 @@
 #include "SymbolTable.h"
 #include "Symbol.h"
 #include "TokenTable.h"
-#include "RecursiveDescentParser.h"
+#include "LanguageChecker.h"
 #include <string>
 #include <Windows.h>
 #include <fstream>
@@ -84,7 +84,7 @@ private:
 	SymbolTable symbolTable_;								// Set of Symbols
 	TokenTable tokenTable_;									// vector of tokens
 	Token currentVectorToken_;								// token class for vector Token Table
-	RecursiveDescentParser recursiveDescentParser_;
+	LanguageChecker recursiveDescentParser_;
 
 	/**************************************************************
 	*	  Purpose:  Asks user for a JavaScript filename

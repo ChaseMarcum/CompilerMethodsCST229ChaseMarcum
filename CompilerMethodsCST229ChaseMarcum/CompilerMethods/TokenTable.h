@@ -16,13 +16,12 @@
 #ifndef TOKENTABLE_H
 #define TOKENTABLE_H
 #include "Token.h"
-#include <string>
 #include <vector>
 
 using namespace std;
 
-class TokenTable
-{
+class TokenTable {
+
 public:
 
 	vector<Token> tokenTableVector;		// Vector of Tokens

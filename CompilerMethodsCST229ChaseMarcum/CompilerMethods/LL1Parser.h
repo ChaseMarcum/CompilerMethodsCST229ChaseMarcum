@@ -19,19 +19,17 @@
 #include <string>
 #include "Rules.h"
 #include "TokenTable.h"
-#include <set>
 #include <stack>
 #include <vector>
 
 using namespace std;
 
-class LL1Parser
-{
+class LL1Parser {
 public:
 	Rules ruleSet;
-	vector<Rules> myRules;
-	stack<Token> tokenStack;
-	stack<string> ruleStack;
+	vector<Rules> rules_;
+	stack<Token> tokenStack_;
+	stack<string> ruleStack_;
 
 	/**************************************************************
 	*	  Purpose:  Constructor of LL1Parser and sets initial
@@ -65,8 +63,26 @@ public:
 	****************************************************************/
 	~LL1Parser();
 
+	/**************************************************************
+	*	  Purpose:  Adds element to Rule
+	*
+	*     Entry:	The int of rule number
+	*
+	*     Exit:		n/a
+	*
+	****************************************************************/
+	void AddRule(int ruleNumber);
 
-	void AddRules(int ruleNumber);
+	/**************************************************************
+	*	  Purpose:  Compares the rules table with the current input
+	*				pushes rules onto the rule stack when appropriate.
+	*				Returns true if rules are met, and false if they
+	*				are not.
+	*
+	*     Entry:	The current Token
+	*
+	*     Exit:		A Boolean if Token is an valid RELOP Statement
+	****************************************************************/
 	bool Run();
 };
 

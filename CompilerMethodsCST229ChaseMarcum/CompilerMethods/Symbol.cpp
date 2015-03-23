@@ -18,7 +18,11 @@
 *
 ************************************************************/
 
+
 #include "Symbol.h"
+#include <string>
+
+using namespace std;
 
 /**************************************************************
 *	  Purpose:  Constructor of Symbol and sets initial

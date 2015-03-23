@@ -78,9 +78,11 @@
   <ItemGroup>
     <ClInclude Include="LexicalAnalyzer.h" />
     <ClInclude Include="LL1Parser.h" />
-    <ClInclude Include="RecursiveDescentParser.h" />
+    <ClInclude Include="LanguageChecker.h" />
+    <ClInclude Include="Parser.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Rules.h" />
+    <ClInclude Include="State.h" />
     <ClInclude Include="Symbol.h" />
     <ClInclude Include="SymbolTable.h" />
     <ClInclude Include="Token.h" />
@@ -90,8 +92,10 @@
     <ClCompile Include="LexicalAnalyzer.cpp" />
     <ClCompile Include="LL1Parser.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="RecursiveDescentParser.cpp" />
+    <ClCompile Include="LanguageChecker.cpp" />
+    <ClCompile Include="Parser.cpp" />
     <ClCompile Include="Rules.cpp" />
+    <ClCompile Include="State.cpp" />
     <ClCompile Include="Symbol.cpp" />
     <ClCompile Include="SymbolTable.cpp" />
     <ClCompile Include="Token.cpp" />

@@ -13,14 +13,14 @@
 
 #ifndef SYMBOLTABLE_H
 #define SYMBOLTABLE_H
-#include <string>
 #include "Symbol.h"
+#include <string>
 #include <set>
 
 using namespace std;
 
-class SymbolTable
-{
+class SymbolTable {
+
 public:
 
 	set<Symbol> SymbolTableSet;		// A set container of Symbols
@@ -53,7 +53,7 @@ public:
 	*     Exit:		n/a
 	*
 	****************************************************************/
-	void addSymbol(Symbol symbol);
+	void AddSymbol(Symbol symbol);
 
 	/**************************************************************
 	*	  Purpose:  Searches SymbolTableSet with given string name.
@@ -65,6 +65,6 @@ public:
 	*				Symbol with string "notFound" in symbolName
 	*
 	****************************************************************/
-	Symbol findSymbol(string name);
+	Symbol FindSymbol(string name);
 };
 #endif

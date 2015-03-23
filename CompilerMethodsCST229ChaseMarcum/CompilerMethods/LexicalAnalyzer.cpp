@@ -106,7 +106,7 @@ string LexicalAnalyzer::ConsoleDisplay() {
 	cout << "Lab #2 Recursive Descent Parser(List of statements & Some Semantic Analysis)\n\n";
 	cout << "This program will analyze the provious JavaScript file\n\n";
 
-	recursiveDescentParser_.Start(tokenTable_, symbolTable_);
+	recursiveDescentParser_.Start();
 }
 
 /**************************************************************
@@ -415,7 +415,7 @@ void LexicalAnalyzer::AddToSymbolTable(string type, string errorMessage)
 		currentVectorToken_.tokenName = currentToken_;
 		currentVectorToken_.tokenType = type;
 
-		symbolTable_.addSymbol(currentSymbol_);
+		symbolTable_.AddSymbol(currentSymbol_);
 		tokenTable_.addToken(currentVectorToken_);
 
 		cout << "   " << setw(28) << left << currentSymbol_.symbolName;
@@ -475,7 +475,7 @@ void LexicalAnalyzer::HandlePreprocessorDirective(char currentChar, string type,
 				{
 					currentSymbol_.symbolValue = currentToken_;
 					currentVectorToken_.tokenValue = currentToken_;
-					symbolTable_.addSymbol(currentSymbol_);
+					symbolTable_.AddSymbol(currentSymbol_);
 					tokenTable_.addToken(currentVectorToken_);
 
 					SetConsoleTextAttribute(hConsole_, 0xb);
@@ -516,7 +516,7 @@ void LexicalAnalyzer::HandlePreprocessorDirective(char currentChar, string type,
 				{
 					currentSymbol_.symbolValue = currentToken_;
 					currentVectorToken_.tokenValue = currentToken_;
-					symbolTable_.addSymbol(currentSymbol_);
+					symbolTable_.AddSymbol(currentSymbol_);
 					tokenTable_.addToken(currentVectorToken_);
 
 					SetConsoleTextAttribute(hConsole_, 0xb);

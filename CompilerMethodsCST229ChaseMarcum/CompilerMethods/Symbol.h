@@ -21,12 +21,11 @@
 #ifndef SYMBOL_H
 #define SYMBOL_H
 #include <string>
-#include <iostream>
 
 using namespace std;
 
-class Symbol
-{
+class Symbol {
+
 public:
 
 	string symbolName;		// Name of Symbol
@@ -78,8 +77,7 @@ public:
 	*
 	****************************************************************/
 	friend bool Symbol::operator<(const Symbol& lhs,
-		const Symbol& rhs)
-	{
+								  const Symbol& rhs) {
 		return(lhs.symbolName < rhs.symbolName);
 	}
 
@@ -94,8 +92,7 @@ public:
 	*
 	****************************************************************/
 	friend bool Symbol::operator==(const Symbol& lhs,
-		const Symbol& rhs)
-	{
+								   const Symbol& rhs) {
 		return(lhs.symbolName == rhs.symbolName);
 	}
 
@@ -110,8 +107,7 @@ public:
 	*
 	****************************************************************/
 	friend bool Symbol::operator!=(const Symbol& lhs,
-		const Symbol& rhs)
-	{
+								   const Symbol& rhs) {
 		return(lhs.symbolName != rhs.symbolName);
 	}
 };

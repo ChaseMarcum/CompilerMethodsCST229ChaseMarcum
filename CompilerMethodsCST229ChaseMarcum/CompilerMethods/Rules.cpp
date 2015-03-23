@@ -12,6 +12,8 @@
 
 #include "Rules.h"
 
+using namespace std;
+
 /**************************************************************
 *	  Purpose:  Constructor of Rules and sets initial
 *				state of variable members
@@ -37,9 +39,7 @@ Rules::Rules(string key, string value, string elements)
 *     Exit:		n/a
 *
 ****************************************************************/
-Rules::Rules()
-{
-}
+Rules::Rules() {}
 
 /**************************************************************
 *	  Purpose:  Destructor of Rules
@@ -49,9 +49,7 @@ Rules::Rules()
 *     Exit:		n/a
 *
 ****************************************************************/
-Rules::~Rules()
-{
-}
+Rules::~Rules() {}
 
 /**************************************************************
 *	  Purpose:  

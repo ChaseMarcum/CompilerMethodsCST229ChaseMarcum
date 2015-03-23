@@ -1,9 +1,9 @@
 /***********************************************************
 * Author:					Chase Marcum
 * Date Created:				2014-03-01
-* Last Modification Date:	2015-02-02
-* Lab Number:				CST 320 Compiler Method
-* Filename:					RecursiveDescentParser.h
+* Last Modification Date:	2015-03-22
+* Lab Number:				CST 320 Lab 2
+* Filename:					LanguageChecker.h
 *
 * Overview:
 *	A top-down recursive descent parser.
@@ -20,31 +20,100 @@
 #define RECURSIVEDESCENTPARSER_H
 #include "TokenTable.h"
 #include "SymbolTable.h"
-#include <iostream>
-#include <string>
 #include <set>
 
-class RecursiveDescentParser
-{
+using namespace std;
+
+class LanguageChecker {
+
 public:
-	TokenTable _tokenTable;
-	Token _token;
-	vector<Token>::iterator _tokenTableIterator;
-	vector<Token>::iterator _tempTokenTableIterator;
-	vector<Token>::iterator _endOfTokenTableIterator;
-	SymbolTable _symbolTable;
-	Symbol _symbol;
-	set<Symbol>::iterator _symbolTableIterator;
-	set<Symbol>::iterator _tempSymbolTableIterator;
-	set<Symbol>::iterator _endOfSymbolTableIterator;
+	TokenTable tokenTable_;
+
+	Token token_;
+	vector<Token>::iterator tokenTableIterator_;
+	vector<Token>::iterator tempTokenTableIterator_;
+	vector<Token>::iterator endOfTokenTableIterator_;
+
+	SymbolTable symbolTable_;
+
+	Symbol symbol_;
+	set<Symbol>::iterator symbolTableIterator_;
+	set<Symbol>::iterator tempSymbolTableIterator_;
+	set<Symbol>::iterator endOfSymbolTableIterator_;
 
 	bool syntaxError = false;
 
-	RecursiveDescentParser(TokenTable tokenTable, SymbolTable symbolTable);
-	RecursiveDescentParser();
-	~RecursiveDescentParser();
+	/**************************************************************
+	*	  Purpose:  Constructor of LanguageChecker and sets initial
+	*				variable members
+	*
+	*     Entry:	string key, string value, string elements
+	*
+	*     Exit:		n/a
+	*
+	****************************************************************/
+	LanguageChecker(TokenTable tokenTable, SymbolTable &symbolTable);
 
-	bool Start(TokenTable passedTokenTable, SymbolTable passedSymbolTable);
+	/**************************************************************
+	*	  Purpose:  Default constructor for LanguageChecker no variable
+	*				members set
+	*
+	*     Entry:	n/a
+	*
+	*     Exit:		n/a
+	*
+	****************************************************************/
+	LanguageChecker();
+
+	/**************************************************************
+	*	  Purpose:  Destructor of LanguageChecker
+	*
+	*     Entry:	n/a
+	*
+	*     Exit:		n/a
+	*
+	****************************************************************/
+	~LanguageChecker();
+
+	/**************************************************************
+	*	  Purpose:
+	*
+	*     Entry:	n/a
+	*
+	*     Exit:		n/a
+	*
+	****************************************************************/
+	void AddSymbol(Symbol symbol);
+
+	/**************************************************************
+	*	  Purpose:
+	*
+	*     Entry:	n/a
+	*
+	*     Exit:		n/a
+	*
+	****************************************************************/
+	bool Start();
+
+	/**************************************************************
+	*	  Purpose:  Checks if Token is a vailid JavaScript
+	*				Declaration Statement
+	*
+	*     Entry:	The current Token
+	*
+	*     Exit:		A Boolean if Token is an valid Declaration Statement
+	****************************************************************/
+	bool isStatementList();
+
+	/**************************************************************
+	*	  Purpose:  Checks if Token is a vailid JavaScript
+	*				Declaration Statement
+	*
+	*     Entry:	The current Token
+	*
+	*     Exit:		A Boolean if Token is an valid Declaration Statement
+	****************************************************************/
+	bool isStatement();
 
 	/**************************************************************
 	*	  Purpose:  Checks if Token is a vailid JavaScript
@@ -116,7 +185,7 @@ public:
 	*
 	*     Exit:		A Boolean if Token is an valid RELOP Statement
 	****************************************************************/
-	bool isRELOPStatement();
+	bool isComparativeStatement();
 
 	/**************************************************************
 	*	  Purpose:  Checks if Token is a vailid JavaScript

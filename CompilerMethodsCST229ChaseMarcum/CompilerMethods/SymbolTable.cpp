@@ -22,9 +22,7 @@
 *     Exit:		n/a
 *
 ****************************************************************/
-SymbolTable::SymbolTable()
-{
-}
+SymbolTable::SymbolTable() {}
 
 /**************************************************************
 *	  Purpose:  Destructor of SymbolTable class
@@ -34,9 +32,7 @@ SymbolTable::SymbolTable()
 *     Exit:		n/a
 *
 ****************************************************************/
-SymbolTable::~SymbolTable()
-{
-}
+SymbolTable::~SymbolTable() {}
 
 /**************************************************************
 *	  Purpose:  Adds Symbol into a set of Symbols, SymbolTableSet
@@ -46,8 +42,7 @@ SymbolTable::~SymbolTable()
 *     Exit:		n/a
 *
 ****************************************************************/
-void SymbolTable::addSymbol(Symbol symbol)
-{
+void SymbolTable::AddSymbol(Symbol symbol) {
 	SymbolTableSet.insert(symbol);
 }
 
@@ -61,19 +56,19 @@ void SymbolTable::addSymbol(Symbol symbol)
 *				Symbol with string "notFound" in symbolName
 *
 ****************************************************************/
-Symbol SymbolTable::findSymbol(string name)
-{
+Symbol SymbolTable::FindSymbol(string name) {
+
 	Symbol locateSymbol;
 	Symbol searchSymbol = Symbol(name, "", "", "");
 
 	set<Symbol>::iterator symbolIterator = SymbolTableSet.find(searchSymbol);
 
-	if (symbolIterator == SymbolTableSet.end())
-	{
+	if (symbolIterator == SymbolTableSet.end()) {
+
 		return Symbol("failed", "", "", "");
 	}
-	else
-	{
+	else {
+
 		locateSymbol = Symbol(symbolIterator->symbolName,
 			symbolIterator->symbolType,
 			symbolIterator->symbolUse,
